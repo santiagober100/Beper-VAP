@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>VAP Beper</title>
+<link rel="manifest" href='data:application/manifest+json,{"name":"VAP Beper","short_name":"VAP Beper","start_url":".","display":"standalone","background_color":"%230f172a","theme_color":"%232563eb","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232563eb%22/><text x=%2250%22 y=%2265%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22>V</text></svg>","sizes":"192x192","type":"image/svg+xml"}]}'>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --success: #10b981;
+    --success-dark: #059669;
+    --warning: #f59e0b;
+    --warning-dark: #d97706;
+    --danger: #ef4444;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #0f172a;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+  }
+  
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --text-light: #94a3b8;
+    --border: #334155;
+    --border-strong: #475569;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.4);
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s, color 0.3s;
+  }
+  
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .header-top { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 6px; 
+  }
+  
+  .logo { 
+    font-size: 20px; 
+    font-weight: 800; 
+    letter-spacing: -0.5px; 
+  }
+  
+  .header-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .theme-toggle {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    backdrop-filter: blur(10px);
+  }
+  
+  .cycle-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+  }
+  
+  .date-display { 
+    font-size: 13px; 
+    opacity: 0.9; 
+    text-transform: capitalize;
+  }
+  
+  .container { 
+    padding: 16px; 
+    max-width: 600px; 
+    margin: 0 auto; 
+  }
+  
+  /* ===== DASHBOARD HOY ===== */
+  .today-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .today-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary);
+  }
+  
+  .today-card.accent-success { border-left-color: var(--success); }
+  .today-card.accent-warning { border-left-color: var(--warning); }
+  
+  .today-card .label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  
+  .today-card .value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  
+  .today-card .sub {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+  
+  .status-banner {
+    background: linear-gradient(135deg, var(--success), var(--success-dark));
+    color: white;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .status-banner.rest {
+    background: linear-gradient(135deg, #64748b, #475569);
+  }
+  
+  .status-banner .title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  
+  .status-banner .subtitle {
+    font-size: 13px;
+    opacity: 0.95;
+  }
+  
+  /* ===== MINI CALENDARIO SEMANAL ===== */
+  .week-overview {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  
+  .week-overview-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  
+  .week-days-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+  }
+  
+  .week-day-cell {
+    text-align: center;
+    padding: 10px 4px;
+    border-radius: 10px;
+    background: var(--bg);
+    position: relative;
+    transition: transform 0.2s;
+  }
+  
+  .week-day-cell.today { 
+    outline: 2px solid var(--primary); 
+    outline-offset: 2px; 
+  }
+  
+  .week-day-cell .day-name { 
+    font-size: 10px; 
+    color: var(--text-light); 
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .week-day-cell .day-number {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 4px 0;
+    color: var(--text);
+  }
+  
+  .week-day-cell .day-shift { 
+    font-size: 10px; 
+    font-weight: 700; 
+    margin-top: 2px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  
+  .week-day-cell.active { 
+    background: #d1fae5; 
+  }
+  
+  .week-day-cell.active .day-shift {
+    background: var(--success);
+    color: white;
+  }
+  
+  .week-day-cell.rest { 
+    background: var(--bg);
+  }
+  
+  .week-day-cell.rest .day-shift {
+    color: var(--text-light);
+  }
+  
+  .week-day-cell.changed { 
+    background: #fef3c7;
+  }
+  
+  .week-day-cell.changed .day-shift {
+    background: var(--warning);
+    color: white;
+  }
+  
+  [data-theme="dark"] .week-day-cell.active {
+    background: #064e3b;
+  }
+  
+  [data-theme="dark"] .week-day-cell.changed {
+    background: #78350f;
+  }
+  
+  /* ===== TABLA DE CONFIGURACIÓN ===== */
+  .week-table {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  
+  .week-table-header {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+  }
+  
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  
+  .schedule-table th {
+    padding: 8px 4px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-light);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .schedule-table th:first-child {
+    text-align: left;
+    width: 70px;
+  }
+  
+  .schedule-table td {
+    padding: 8px 4px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .schedule-table td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    font-size: 12px;
+  }
+  
+  .schedule-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .checkbox-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+  }
+  
+  .checkbox-cell input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border-strong);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    background: var(--card);
+    transition: all 0.15s;
+  }
+  
+  .checkbox-cell input:checked {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  
+  .checkbox-cell input:checked::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .checkbox-cell input:active {
+    transform: scale(0.9);
+  }
+  
+  /* ===== CAMBIOS (dentro de configuración) ===== */
+  .changes-section {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  
+  .changes-section .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  
+  .changes-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  
+  .changes-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  
+  .btn-attend {
+    background: var(--success);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  
+  .btn-compensate {
+    background: var(--warning);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  
+  .btn-attend:active, .btn-compensate:active {
+    transform: scale(0.97);
+  }
+  
+  .change-item {
+    background: var(--bg);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border-left: 4px solid var(--success);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .change-item.compensate {
+    border-left-color: var(--warning);
+  }
+  
+  .change-info {
+    flex: 1;
+  }
+  
+  .change-date {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  
+  .change-type {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  
+  .btn-delete {
+    background: transparent;
+    color: var(--danger);
+    border: none;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    width: auto;
+  }
+  
+  .btn-delete:hover {
+    background: rgba(239, 68, 68, 0.1);
+  }
+  
+  /* ===== CALENDARIO ===== */
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  
+  .cal-header {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-light);
+    padding: 8px 0;
+  }
+  
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--bg);
+    position: relative;
+    cursor: pointer;
+    padding: 2px;
+  }
+  
+  .cal-day.empty { background: transparent; cursor: default; }
+  .cal-day.today { outline: 2px solid var(--primary); outline-offset: -2px; }
+  .cal-day.vap { background: #d1fae5; color: #065f46; }
+  .cal-day.vap-tarde { background: #fef3c7; color: #92400e; }
+  .cal-day.attend { background: #10b981; color: white; }
+  .cal-day.compensate { background: #f59e0b; color: white; }
+  
+  [data-theme="dark"] .cal-day.vap { background: #064e3b; color: #d1fae5; }
+  [data-theme="dark"] .cal-day.vap-tarde { background: #78350f; color: #fef3c7; }
+  [data-theme="dark"] .cal-day.attend { background: #059669; color: white; }
+  [data-theme="dark"] .cal-day.compensate { background: #d97706; color: white; }
+  
+  .cal-day .dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: currentColor; margin-top: 2px;
+  }
+  
+  .cal-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  
+  .cal-nav button {
+    width: auto;
+    padding: 8px 14px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  
+  .cal-month { 
+    font-weight: 700; 
+    font-size: 16px; 
+    text-transform: capitalize; 
+  }
+  
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+    font-size: 11px;
+  }
+  
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+  
+  /* ===== ESTADÍSTICAS ===== */
+  .stat-card {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  
+  .stat-number { font-size: 48px; font-weight: 800; line-height: 1; }
+  .stat-label { font-size: 14px; opacity: 0.9; margin-top: 6px; }
+  
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  
+  .stat-mini {
+    background: var(--card);
+    padding: 14px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  
+  .stat-mini .num { font-size: 24px; font-weight: 800; color: var(--primary); }
+  .stat-mini .lbl { font-size: 11px; color: var(--text-light); text-transform: uppercase; font-weight: 600; margin-top: 2px; }
+  
+  /* ===== COMPONENTES GENERALES ===== */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  
+  .form-group { margin-bottom: 14px; }
+  
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 15px;
+    background: var(--card);
+    color: var(--text);
+    font-family: inherit;
+  }
+  
+  input:focus, select:focus { 
+    outline: none; 
+    border-color: var(--primary); 
+  }
+  
+  button, .btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.1s, opacity 0.2s;
+  }
+  
+  button:active { transform: scale(0.98); }
+  
+  .btn-secondary { 
+    background: var(--bg); 
+    color: var(--text); 
+    border: 1px solid var(--border);
+  }
+  
+  .btn-small { 
+    padding: 8px 14px; 
+    font-size: 13px; 
+    width: auto; 
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-light);
+    font-size: 13px;
+  }
+  
+  .help-text { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+  
+  nav.tabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+    z-index: 100;
+    border-top: 1px solid var(--border);
+  }
+  
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 12px;
+    font-weight: 600;
+    transition: color 0.2s;
+    border: none;
+    background: none;
+  }
+  
+  .tab.active { 
+    color: var(--primary); 
+  }
+  
+  .view { display: none; }
+  .view.active { display: block; }
+  
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .modal.active { display: flex; }
+  
+  .modal-content {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+  
+  .toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--text);
+    color: var(--bg);
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 300;
+    max-width: 90%;
+  }
+  
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  
+  @media (min-width: 640px) {
+    .today-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo">VAP Beper</div>
+    <div class="header-controls">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">◐</button>
+      <div class="cycle-badge" id="cycleBadge">Semana 1/5</div>
+    </div>
+  </div>
+  <div class="date-display" id="dateDisplay"></div>
+</header>
+
+<div class="container">
+
+  <!-- VISTA: HOY -->
+  <div class="view active" id="view-home">
+    <div id="statusBanner"></div>
+    
+    <div class="today-grid">
+      <div class="today-card">
+        <div class="label">Semana</div>
+        <div class="value" id="infoWeek">—</div>
+        <div class="sub">de 5</div>
+      </div>
+      
+      <div class="today-card accent-success">
+        <div class="label">Próximo VAP</div>
+        <div class="value" id="infoNext">—</div>
+        <div class="sub" id="infoNextSub"></div>
+      </div>
+      
+      <div class="today-card accent-warning">
+        <div class="label">Jornada de hoy</div>
+        <div class="value" id="infoShift">—</div>
+        <div class="sub" id="infoShiftSub"></div>
+      </div>
+    </div>
+    
+    <!-- Mini calendario semanal -->
+    <div class="week-overview">
+      <div class="week-overview-title">Esta semana</div>
+      <div class="week-days-grid" id="weekDaysGrid"></div>
+    </div>
+  </div>
+
+  <!-- VISTA: CONFIGURACIÓN (incluye cambios) -->
+  <div class="view" id="view-config">
+    
+    <!-- Sección de cambios -->
+    <div class="changes-section">
+      <div class="section-title">Registrar cambio de jornada</div>
+      <div class="help-text" style="margin-bottom:10px">
+        Marca cuando asististe a VAP fuera de tu turno o cuando compensaste una jornada.
+      </div>
+      <div class="changes-form">
+        <div class="form-group" style="margin:0">
+          <label class="form-label">Fecha</label>
+          <input type="date" id="changeDate">
+        </div>
+        <div class="changes-buttons">
+          <button class="btn-attend" onclick="addChange('attend')">Atendí VAP</button>
+          <button class="btn-compensate" onclick="addChange('compensate')">Compensé</button>
+        </div>
+      </div>
+      <div id="changesList"></div>
+    </div>
+    
+    <!-- Configuración del ciclo -->
+    <div class="card">
+      <div class="card-title">Configuración del ciclo</div>
+      <div class="form-group">
+        <label class="form-label">Semana actual del ciclo</label>
+        <select id="currentWeek">
+          <option value="1">Semana 1</option>
+          <option value="2">Semana 2</option>
+          <option value="3">Semana 3</option>
+          <option value="4">Semana 4</option>
+          <option value="5">Semana 5</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha de hoy</label>
+        <input type="date" id="todayDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tu nombre (opcional)</label>
+        <input type="text" id="userName" placeholder="Ej: Juan Pérez">
+      </div>
+      <button onclick="saveConfig()">Guardar configuración</button>
+    </div>
+
+    <!-- Tabla de jornadas por semana -->
+    <div class="card">
+      <div class="card-title">Tus jornadas de VAP</div>
+      <div class="help-text" style="margin-bottom:14px">
+        Marca la casilla correspondiente al día y jornada. Solo una opción por día.
+      </div>
+      <div id="weeksConfig"></div>
+    </div>
+
+    <button class="btn-secondary" onclick="exportData()">Exportar datos</button>
+    <button class="btn-secondary" style="margin-top:10px" onclick="document.getElementById('importFile').click()">Importar datos</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+
+  <!-- VISTA: CALENDARIO -->
+  <div class="view" id="view-calendar">
+    <div class="card">
+      <div class="cal-nav">
+        <button onclick="changeMonth(-1)">Ant</button>
+        <div class="cal-month" id="calMonth"></div>
+        <button onclick="changeMonth(1)">Sig</button>
+      </div>
+      <div class="calendar" id="calendar"></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#d1fae5"></div>VAP mañana</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#fef3c7"></div>VAP tarde</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>Atendí VAP</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Compensé</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA: ESTADÍSTICAS -->
+  <div class="view" id="view-stats">
+    <div class="card">
+      <div class="card-title">Conteo en rango de fechas</div>
+      <div class="form-group">
+        <label class="form-label">Desde</label>
+        <input type="date" id="statFrom">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hasta</label>
+        <input type="date" id="statTo">
+      </div>
+      <button onclick="calculateStats()">Calcular</button>
+    </div>
+
+    <div id="statsResults"></div>
+  </div>
+
+</div>
+
+<nav class="tabs">
+  <button class="tab active" data-view="home">Hoy</button>
+  <button class="tab" data-view="config">Configuración</button>
+  <button class="tab" data-view="calendar">Calendario</button>
+  <button class="tab" data-view="stats">Estadísticas</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="dayModal">
+  <div class="modal-content">
+    <div class="modal-title" id="modalTitle"></div>
+    <div id="modalBody"></div>
+    <button class="btn-secondary" style="margin-top:14px" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+// ============ ESTADO ============
+const DAYS_SHORT = ['L', 'M', 'X', 'J', 'V', 'S'];
+const DAYS_FULL = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+let state = {
+  startDate: null,
+  userName: '',
+  weeks: [],
+  changes: [],
+  calendarMonth: new Date(),
+  theme: 'light'
+};
+
+// ============ TEMA ============
+function toggleTheme() {
+  state.theme = state.theme === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', state.theme);
+  document.getElementById('themeBtn').textContent = state.theme === 'light' ? '◐' : '◑';
+  saveState();
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem('vapBeperTheme');
+  if (saved) {
+    state.theme = saved;
+    document.documentElement.setAttribute('data-theme', state.theme);
+    document.getElementById('themeBtn').textContent = state.theme === 'light' ? '◐' : '◑';
+  }
+}
+
+// ============ PERSISTENCIA ============
+function loadState() {
+  const saved = localStorage.getItem('vapBeper');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+    } catch(e) { console.error(e); }
+  }
+  
+  if (!state.weeks || state.weeks.length === 0) {
+    state.weeks = Array(5).fill().map(() =>
+      Array(6).fill().map(() => ({ shift: 'descanso' }))
+    );
+  }
+  
+  if (!state.changes) state.changes = [];
+  
+  if (!state.startDate) {
+    const today = new Date();
+    state.startDate = today.toISOString().split('T')[0];
+  }
+}
+
+function saveState() {
+  localStorage.setItem('vapBeper', JSON.stringify(state));
+  localStorage.setItem('vapBeperTheme', state.theme);
+}
+
+// ============ CÁLCULOS ============
+function calculateStartDate(todayStr, currentWeek) {
+  const today = new Date(todayStr + 'T00:00:00');
+  const dayIdx = getDayIndex(today);
+  const daysFromWeekStart = dayIdx === -1 ? 6 : dayIdx;
+  const daysFromCycleStart = (currentWeek - 1) * 7 + daysFromWeekStart;
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - daysFromCycleStart);
+  return startDate.toISOString().split('T')[0];
+}
+
+function getWeekNumber(date) {
+  const start = new Date(state.startDate + 'T00:00:00');
+  const diffDays = Math.floor((date - start) / (1000 * 60 * 60 * 24));
+  const weekIdx = Math.floor(diffDays / 7);
+  return ((weekIdx % 5) + 5) % 5;
+}
+
+function getCycleNumber(date) {
+  const start = new Date(state.startDate + 'T00:00:00');
+  const diffDays = Math.floor((date - start) / (1000 * 60 * 60 * 24));
+  const weekIdx = Math.floor(diffDays / 7);
+  return Math.floor(weekIdx / 5) + 1;
+}
+
+function getDayIndex(date) {
+  const d = date.getDay();
+  return d === 0 ? -1 : d - 1;
+}
+
+function getShiftForDate(date) {
+  const d = new Date(date);
+  d.setHours(0,0,0,0);
+  const dayIdx = getDayIndex(d);
+  if (dayIdx === -1) return { shift: 'descanso', isSunday: true };
+  
+  const dateStr = d.toISOString().split('T')[0];
+  
+  const change = state.changes.find(c => c.date === dateStr);
+  if (change) {
+    if (change.type === 'attend') {
+      return { shift: change.shift || 'mañana', changed: true, changeType: 'attend' };
+    } else if (change.type === 'compensate') {
+      return { shift: 'descanso', changed: true, changeType: 'compensate' };
+    }
+  }
+  
+  const weekIdx = getWeekNumber(d);
+  const baseShift = state.weeks[weekIdx][dayIdx].shift;
+  
+  return { shift: baseShift, changed: false };
+}
+
+function getNextVap(fromDate) {
+  const d = new Date(fromDate);
+  d.setHours(0,0,0,0);
+  for (let i = 1; i <= 40; i++) {
+    const next = new Date(d);
+    next.setDate(d.getDate() + i);
+    const info = getShiftForDate(next);
+    if (info.shift !== 'descanso') {
+      return { date: next, shift: info.shift, days: i };
+    }
+  }
+  return null;
+}
+
+function countVapsInRange(from, to) {
+  const fromDate = new Date(from + 'T00:00:00');
+  const toDate = new Date(to + 'T00:00:00');
+  let count = 0;
+  let mañana = 0, tarde = 0;
+  let attend = 0, compensate = 0;
+  const d = new Date(fromDate);
+  while (d <= toDate) {
+    const info = getShiftForDate(d);
+    if (info.shift === 'mañana') { count++; mañana++; }
+    else if (info.shift === 'tarde') { count++; tarde++; }
+    if (info.changeType === 'attend') attend++;
+    if (info.changeType === 'compensate') compensate++;
+    d.setDate(d.getDate() + 1);
+  }
+  return { total: count, mañana, tarde, attend, compensate };
+}
+
+// ============ RENDERIZADO ============
+function renderHeader() {
+  const today = new Date();
+  const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+  document.getElementById('dateDisplay').textContent = today.toLocaleDateString('es-ES', opts);
+  const weekNum = getWeekNumber(today) + 1;
+  const cycleNum = getCycleNumber(today);
+  document.getElementById('cycleBadge').textContent = `Ciclo ${cycleNum} · Sem ${weekNum}/5`;
+}
+
+function renderHome() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const info = getShiftForDate(today);
+  const isVap = info.shift !== 'descanso';
+  
+  const banner = document.getElementById('statusBanner');
+  if (isVap) {
+    banner.className = 'status-banner';
+    banner.innerHTML = `
+      <div class="title">Hoy te toca VAP</div>
+      <div class="subtitle">Jornada ${info.shift}${info.changed ? ' · Con cambio registrado' : ''}</div>
+    `;
+  } else {
+    banner.className = 'status-banner rest';
+    banner.innerHTML = `
+      <div class="title">Descansas de VAP</div>
+      <div class="subtitle">${info.isSunday ? 'Es domingo' : (info.changeType === 'compensate' ? 'Compensación registrada' : 'No te toca esta jornada')}</div>
+    `;
+  }
+  
+  document.getElementById('infoWeek').textContent = getWeekNumber(today) + 1;
+  
+  const next = getNextVap(today);
+  if (next) {
+    document.getElementById('infoNext').textContent = next.days;
+    const opts = { day: 'numeric', month: 'short' };
+    document.getElementById('infoNextSub').textContent = 
+      `${next.days === 1 ? 'Mañana' : `en ${next.days} días`} · ${next.date.toLocaleDateString('es-ES', opts)}`;
+  } else {
+    document.getElementById('infoNext').textContent = '—';
+    document.getElementById('infoNextSub').textContent = '';
+  }
+  
+  if (isVap) {
+    document.getElementById('infoShift').textContent = 
+      info.shift.charAt(0).toUpperCase() + info.shift.slice(1);
+    document.getElementById('infoShiftSub').textContent = 'Atender VAP';
+  } else {
+    document.getElementById('infoShift').textContent = 'Descanso';
+    document.getElementById('infoShiftSub').textContent = 'Sin VAP hoy';
+  }
+  
+  // Mini calendario semanal
+  renderWeekOverview();
+}
+
+function renderWeekOverview() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  
+  const weekStart = new Date(today);
+  const dayIdx = getDayIndex(today);
+  weekStart.setDate(today.getDate() - (dayIdx === -1 ? 6 : dayIdx));
+  
+  const grid = document.getElementById('weekDaysGrid');
+  grid.innerHTML = '';
+  
+  for (let i = 0; i < 6; i++) {
+    const d = new Date(weekStart);
+    d.setDate(weekStart.getDate() + i);
+    const dInfo = getShiftForDate(d);
+    const isToday = d.getTime() === today.getTime();
+    const isActive = dInfo.shift !== 'descanso';
+    
+    const cell = document.createElement('div');
+    cell.className = 'week-day-cell';
+    if (isToday) cell.classList.add('today');
+    
+    if (dInfo.changed) {
+      cell.classList.add('changed');
+    } else if (isActive) {
+      cell.classList.add('active');
+    } else {
+      cell.classList.add('rest');
+    }
+    
+    let shiftLabel = '—';
+    if (isActive) {
+      shiftLabel = dInfo.shift === 'mañana' ? 'AM' : 'PM';
+    }
+    
+    cell.innerHTML = `
+      <div class="day-name">${DAYS_SHORT[i]}</div>
+      <div class="day-number">${d.getDate()}</div>
+      <div class="day-shift">${shiftLabel}</div>
+    `;
+    
+    grid.appendChild(cell);
+  }
+}
+
+function renderConfig() {
+  const today = new Date();
+  const currentWeek = getWeekNumber(today) + 1;
+  document.getElementById('currentWeek').value = currentWeek;
+  document.getElementById('todayDate').value = today.toISOString().split('T')[0];
+  document.getElementById('userName').value = state.userName || '';
+  document.getElementById('changeDate').value = today.toISOString().split('T')[0];
+  
+  const container = document.getElementById('weeksConfig');
+  container.innerHTML = '';
+  
+  state.weeks.forEach((week, wIdx) => {
+    const div = document.createElement('div');
+    div.className = 'week-table';
+    
+    let tableHTML = `
+      <div class="week-table-header">Semana ${wIdx + 1}</div>
+      <table class="schedule-table">
+        <thead>
+          <tr>
+            <th></th>
+            ${DAYS_SHORT.map(d => `<th>${d}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mañana</td>
+            ${week.map((day, dIdx) => `
+              <td>
+                <label class="checkbox-cell">
+                  <input type="checkbox" 
+                    data-week="${wIdx}" 
+                    data-day="${dIdx}" 
+                    data-shift="mañana"
+                    ${day.shift === 'mañana' ? 'checked' : ''}>
+                </label>
+              </td>
+            `).join('')}
+          </tr>
+          <tr>
+            <td>Tarde</td>
+            ${week.map((day, dIdx) => `
+              <td>
+                <label class="checkbox-cell">
+                  <input type="checkbox" 
+                    data-week="${wIdx}" 
+                    data-day="${dIdx}" 
+                    data-shift="tarde"
+                    ${day.shift === 'tarde' ? 'checked' : ''}>
+                </label>
+              </td>
+            `).join('')}
+          </tr>
+        </tbody>
+      </table>
+    `;
+    
+    div.innerHTML = tableHTML;
+    container.appendChild(div);
+  });
+  
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', handleCheckboxChange);
+  });
+  
+  renderChangesList();
+}
+
+function handleCheckboxChange(e) {
+  const w = +e.target.dataset.week;
+  const d = +e.target.dataset.day;
+  const shift = e.target.dataset.shift;
+  
+  if (e.target.checked) {
+    const otherShift = shift === 'mañana' ? 'tarde' : 'mañana';
+    const otherCb = document.querySelector(
+      `input[data-week="${w}"][data-day="${d}"][data-shift="${otherShift}"]`
+    );
+    if (otherCb) otherCb.checked = false;
+    
+    state.weeks[w][d].shift = shift;
+  } else {
+    state.weeks[w][d].shift = 'descanso';
+  }
+  
+  saveState();
+  renderHome();
+  renderCalendar();
+}
+
+function renderChangesList() {
+  const list = document.getElementById('changesList');
+  if (state.changes.length === 0) {
+    list.innerHTML = `<div class="empty-state">Sin cambios registrados</div>`;
+    return;
+  }
+  
+  const sorted = [...state.changes].sort((a, b) => b.date.localeCompare(a.date));
+  list.innerHTML = sorted.map(c => {
+    const idx = state.changes.indexOf(c);
+    const isAttend = c.type === 'attend';
+    return `
+      <div class="change-item ${isAttend ? '' : 'compensate'}">
+        <div class="change-info">
+          <div class="change-date">${formatDate(c.date)}</div>
+          <div class="change-type">
+            ${isAttend ? `Atendí VAP (${c.shift || 'mañana'})` : 'Compensé jornada'}
+          </div>
+        </div>
+        <button class="btn-delete" onclick="deleteChange(${idx})">Eliminar</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderCalendar() {
+  const d = state.calendarMonth;
+  const year = d.getFullYear();
+  const month = d.getMonth();
+  
+  document.getElementById('calMonth').textContent = `${MONTHS[month]} ${year}`;
+  
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startWeekday = (firstDay.getDay() + 6) % 7;
+  const daysInMonth = lastDay.getDate();
+  
+  const cal = document.getElementById('calendar');
+  cal.innerHTML = '';
+  
+  DAYS_SHORT.concat(['D']).forEach(day => {
+    const h = document.createElement('div');
+    h.className = 'cal-header';
+    h.textContent = day;
+    cal.appendChild(h);
+  });
+  
+  for (let i = 0; i < startWeekday; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'cal-day empty';
+    cal.appendChild(empty);
+  }
+  
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const info = getShiftForDate(date);
+    const cell = document.createElement('div');
+    cell.className = 'cal-day';
+    
+    if (date.getTime() === today.getTime()) cell.classList.add('today');
+    
+    if (info.changeType === 'attend') {
+      cell.classList.add('attend');
+    } else if (info.changeType === 'compensate') {
+      cell.classList.add('compensate');
+    } else if (info.shift === 'mañana') {
+      cell.classList.add('vap');
+    } else if (info.shift === 'tarde') {
+      cell.classList.add('vap-tarde');
+    }
+    
+    cell.innerHTML = `<span>${day}</span>${info.shift !== 'descanso' || info.changeType ? '<div class="dot"></div>' : ''}`;
+    cell.onclick = () => showDayDetail(date);
+    cal.appendChild(cell);
+  }
+}
+
+function renderStats() {
+  const today = new Date();
+  const monthAgo = new Date(today);
+  monthAgo.setDate(today.getDate() - 30);
+  
+  document.getElementById('statFrom').value = monthAgo.toISOString().split('T')[0];
+  document.getElementById('statTo').value = today.toISOString().split('T')[0];
+  
+  calculateStats();
+}
+
+function calculateStats() {
+  const from = document.getElementById('statFrom').value;
+  const to = document.getElementById('statTo').value;
+  if (!from || !to) return;
+  
+  const stats = countVapsInRange(from, to);
+  const days = Math.floor((new Date(to) - new Date(from)) / (1000*60*60*24)) + 1;
+  
+  document.getElementById('statsResults').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-number">${stats.total}</div>
+      <div class="stat-label">VAPs totales en el período</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-mini">
+        <div class="num">${stats.mañana}</div>
+        <div class="lbl">Jornadas mañana</div>
+      </div>
+      <div class="stat-mini">
+        <div class="num">${stats.tarde}</div>
+        <div class="lbl">Jornadas tarde</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-mini">
+        <div class="num">${stats.attend}</div>
+        <div class="lbl">Asistencias extra</div>
+      </div>
+      <div class="stat-mini">
+        <div class="num">${stats.compensate}</div>
+        <div class="lbl">Compensaciones</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-mini">
+        <div class="num">${days}</div>
+        <div class="lbl">Días en rango</div>
+      </div>
+      <div class="stat-mini">
+        <div class="num">${days > 0 ? (stats.total / days * 7).toFixed(1) : 0}</div>
+        <div class="lbl">VAPs/semana</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ ACCIONES ============
+function saveConfig() {
+  const currentWeek = parseInt(document.getElementById('currentWeek').value);
+  const todayDate = document.getElementById('todayDate').value;
+  
+  if (!todayDate) {
+    showToast('Selecciona la fecha de hoy');
+    return;
+  }
+  
+  state.startDate = calculateStartDate(todayDate, currentWeek);
+  state.userName = document.getElementById('userName').value;
+  saveState();
+  renderAll();
+  showToast('Configuración guardada');
+}
+
+function addChange(type) {
+  const date = document.getElementById('changeDate').value;
+  if (!date) { 
+    showToast('Selecciona una fecha'); 
+    return; 
+  }
+  
+  const d = new Date(date + 'T00:00:00');
+  const dayIdx = getDayIndex(d);
+  
+  if (dayIdx === -1) {
+    showToast('No se pueden registrar cambios en domingo');
+    return;
+  }
+  
+  let shift = null;
+  if (type === 'attend') {
+    const weekIdx = getWeekNumber(d);
+    const baseShift = state.weeks[weekIdx][dayIdx].shift;
+    shift = baseShift !== 'descanso' ? baseShift : 'mañana';
+  }
+  
+  const existingIdx = state.changes.findIndex(c => c.date === date);
+  if (existingIdx >= 0) {
+    if (!confirm('Ya existe un cambio para esta fecha. ¿Reemplazarlo?')) return;
+    state.changes.splice(existingIdx, 1);
+  }
+  
+  state.changes.push({ date, type, shift });
+  saveState();
+  renderAll();
+  showToast(type === 'attend' ? 'Asistencia registrada' : 'Compensación registrada');
+}
+
+function deleteChange(idx) {
+  if (!confirm('¿Eliminar este cambio?')) return;
+  state.changes.splice(idx, 1);
+  saveState();
+  renderAll();
+  showToast('Cambio eliminado');
+}
+
+function changeMonth(delta) {
+  state.calendarMonth.setMonth(state.calendarMonth.getMonth() + delta);
+  renderCalendar();
+}
+
+function showDayDetail(date) {
+  const info = getShiftForDate(date);
+  const weekNum = getWeekNumber(date) + 1;
+  const dayIdx = getDayIndex(date);
+  
+  document.getElementById('modalTitle').textContent = formatDate(date);
+  
+  let statusText = 'Descanso';
+  if (info.changeType === 'attend') statusText = `Atendí VAP (${info.shift})`;
+  else if (info.changeType === 'compensate') statusText = 'Compensación';
+  else if (info.shift === 'mañana') statusText = 'VAP mañana';
+  else if (info.shift === 'tarde') statusText = 'VAP tarde';
+  
+  document.getElementById('modalBody').innerHTML = `
+    <div style="margin-bottom:12px">
+      <div class="card-label">Semana del ciclo</div>
+      <div style="font-size:18px;font-weight:700;margin-top:4px">Semana ${weekNum} de 5</div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div class="card-label">Día</div>
+      <div style="font-size:18px;font-weight:700;margin-top:4px">${dayIdx >= 0 ? DAYS_FULL[dayIdx] : 'Domingo'}</div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div class="card-label">Estado</div>
+      <div style="font-size:18px;font-weight:700;margin-top:4px">${statusText}</div>
+    </div>
+  `;
+  document.getElementById('dayModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('dayModal').classList.remove('active');
+}
+
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `vap-beper-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Datos exportados');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      state = { ...state, ...data };
+      saveState();
+      renderAll();
+      showToast('Datos importados');
+    } catch(err) {
+      showToast('Archivo inválido');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ============ UTILIDADES ============
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function renderAll() {
+  renderHeader();
+  renderHome();
+  renderConfig();
+  renderCalendar();
+  renderStats();
+}
+
+// ============ NAVEGACIÓN ============
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('view-' + tab.dataset.view).classList.add('active');
+    if (tab.dataset.view === 'calendar') renderCalendar();
+    if (tab.dataset.view === 'stats') renderStats();
+    window.scrollTo(0, 0);
+  });
+});
+
+// ============ INICIO ============
+loadState();
+loadTheme();
+renderAll();
+
+setInterval(() => {
+  renderHeader();
+  renderHome();
+}, 60000);
+</script>
+
+</body>
+</html>
